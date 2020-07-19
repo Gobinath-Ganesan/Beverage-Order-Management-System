@@ -16,7 +16,7 @@ Also include a swagger UI resource to enable displaying swagger UI as in our dem
 
 ## Completed Tasks
 
-# Use Cases
+### Use Cases
 User: View Beverages? (GET)
 User: Filtering MIN, MAX?
 User: View Order via Order ID? (GET)
@@ -24,7 +24,7 @@ Employee: Create beverages
 Employee: Update beverages
 Employee: Delete beverages
 
-# REST API
+### REST API
 
 Correct HTTP verbs
 Correct status codes
