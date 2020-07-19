@@ -1,0 +1,538 @@
+# open api speicification document - header with version
+# document should be named openapi.yaml or openapi.json
+openapi: "3.0.4"
+# general information
+info:
+  title: Beverage and Order Service
+  version: "1.0"
+  description: | # | for multi line description
+    Beverages camn be ordered by customers and orders can be viwewed by customers and employees.
+servers:
+  - url: http://localhost:9999/v1
+    description: Development Server
+components:
+  schemas:
+    BeverageDTO:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/BottleDTO'
+        - $ref: '#/components/schemas/CrateDTO'
+    BottleDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        volume:
+          type: number
+        isAlcoholic:
+          type: boolean
+        volumePercent:
+          type: number
+        price:
+          type: number
+        supplier:
+          type: string
+        inStock:
+          type: integer
+    CrateDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        bottle:
+          $ref: '#/components/schemas/BottleDTO'
+        noOfBottles:
+          type: integer
+        price:
+          type: number
+        inStock:
+          type: integer
+    OrderStatusDTO:
+      type: string
+      enum:
+        - submitted
+        - processed
+        - cancelled
+    OrderItemDTO:
+      type: object
+      properties:
+        number:
+          type: integer
+        beverage:
+          $ref: '#/components/schemas/OrderItemDTO'
+        quantity:
+          type: integer
+    OrderDTO:
+      type: object
+      properties:
+        orderId:
+          type: integer
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderDTO'
+        price:
+          type: number
+        status:
+          $ref: '#/components/schemas/OrderStatusDTO'
+    ErrorMessage:
+      type: object
+      required:
+        - errorType
+      properties:
+        errorType:
+          description: error category, should be extended
+          enum:
+            - INVALID_PARAMETER
+            - DATA_NOT_FOUND
+        message:
+          type: string
+          description: A detailed error description
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: number
+        noOfPages:
+          type: number
+        first:
+          type: string
+        previous:
+          type: string
+        next:
+          type: string
+        last:
+          type: string
+    PaginatedItems:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        pageItems:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/BeverageDTO'
+              - $ref: '#/components/schemas/OrderDTO'
+        href:
+          type: string
+paths:
+  /Beverage/bottle/:
+    description: User can add ,search bottle
+    post:
+      summary: Adds a bottöe entry
+      description: |
+      Adds a bottle entry and retirn the list of all available bottles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              #$ref:"#component/model/Bottle"
+      responses:
+        201:
+          description: add the bootle
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/BottleDTO"
+        400:
+          description: Received bad request
+          content:
+            applcation/json:
+              schema:
+              $ref: '#/components/schemas/ErrorMessage'
+
+    get:
+      summary: Gets the list of bottles
+      responses:
+        400:
+          description: Received bad request
+          content:
+            applcation/json:
+              schema:
+              $ref: '#/components/schemas/ErrorMessage'
+        200:
+          description: Sending list of bottles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BottleDTO"
+
+  /Beverage/bottle/{bottleid}:
+    description: Perform operations based on the id shared
+    parameters:
+      name: bottleid
+      required: true
+      in: path
+        schema:
+          type: integer
+    get:
+      summary: Get Bottle wit id
+      responses:
+        200:
+          description:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BottleDTO'
+        400:
+          description: A bad request by user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        406:
+          description: Incorrect parameter type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Update the bottle info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BottleDTO'
+      responses:
+        200:
+          description: Updates the bottle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BottleDTO'
+        400:
+          description: Bottle not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+    delete:
+      summary: Get the avaibale information about the bottle bases on id
+      responses:
+        406:
+          description: If the id is not of the type Integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        404:
+          description: If the id is available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+        200:
+          description: Deletes the bottle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BottleDTO"
+
+  /Beverage/bottle/maxPrice:
+    description: Filter the bottle by max price
+    get:
+      summary: Get the list of bottles with maximum price
+      responses:
+        200:
+          description: Returns the list of bottles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bottle"
+        404:
+          description: Empty bottle list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /Beverage/bottle/minPrice:
+    description : Filter the bottle by min price
+      get:
+        summary: Get the list of bottles with minimum price
+        responses:
+          200:
+            description: Returns the list of bottles with minimum price
+            content:
+              application/json:
+                scheme:
+                  $ref: ''
+          404:
+            description: Empty bottle list
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ErrorMessage"
+
+  /Beverage/crate/:
+    description: User can add ,search crate
+    post:
+      summary: Adds a crate entry
+      description: |
+      Adds a crate entry and retirn the list of all available crates
+      requestBody:
+        content:
+          application/json:
+            schema:
+            #$ref:"#component/model/Bottle"
+      responses:
+        201:
+          description: add the crate
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/CrateDTO"
+        400:
+          description: Received bad request
+          content:
+            applcation/json:
+              schema:
+              $ref: '#/components/schemas/ErrorMessage'
+
+    get:
+      summary: Gets the list of crates
+      responses:
+        400:
+          description: Received bad request
+          content:
+            applcation/json:
+              schema:
+              $ref: '#/components/schemas/ErrorMessage'
+        200:
+          description: Sending list of bottles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CrateDTO"
+
+    /Beverage/crate/{crateid}:
+      description: Perform operations based on the id
+      parameters:
+        name: crateid
+        required: true
+        in: path
+          schema:
+            type: integer
+      get:
+        summary: Get crate wit id
+        responses:
+          200:
+            description:
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CrateDTO'
+          400:
+            description: A bad request by user
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorMessage'
+          406:
+            description: Incorrect parameter type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorMessage'
+      put:
+        summary: Update the crate info
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrateDTO'
+        responses:
+          200:
+            description: Updates the crate
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/CrateDTO'
+          400:
+            description: Crate not available
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorMessage'
+
+      delete:
+        summary: Get the avaibale information about the crate based on id
+        responses:
+          406:
+            description: If the id is not of the type Integer
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorMessage'
+          404:
+            description: If the id is available
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ErrorMessage"
+          200:
+            description: Deletes the bottle
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/CrateDTO"
+
+      /Beverage/crate/minPrice:
+        description:  Filter the crate by min price
+        get:
+          summary:  : Get the list of crates with minimum price
+          responses:
+        200:
+          description: Returns the list of crates with minimum price
+          content:
+            application/json:
+              scheme:
+                $ref: "#/components/schemas/Crate"
+        404:
+          description: Empty crate list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+      /Beverage/crate/maxPrice:
+        description:  Filter the crate by max price
+        get:
+          summary:  : Get the list of crates with maximum price
+          responses:
+        200:
+          description: Returns the list of crates with maximum price
+          content:
+            application/json:
+              scheme:
+                $ref: "#/components/schemas/Crate"
+        404:
+          description: Empty crate list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+
+      /Order:
+        description: Add and retrive order info
+          post:
+            summary: Adds a order entry
+            description: |
+            Adds a order entry and retirn the list of all available orders
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/component/model/OrderDTO'
+            responses:
+              201:
+                description: add the order
+                  content:
+                    application/json:
+                      schema:
+                        $ref: "#/components/schemas/OrderDTO"
+              400:
+                description: Received bad request
+                content:
+                  applcation/json:
+                    schema:
+                    $ref: '#/components/schemas/ErrorMessage'
+
+          get:
+            summary: Gets the list of orders
+            responses:
+              400:
+                description: Received bad request
+                content:
+                  applcation/json:
+                    schema:
+                    $ref: '#/components/schemas/ErrorMessage'
+              200:
+                description: Sending list of bottles
+                content:
+                  application/json:
+                    schema:
+                      $ref: "#/components/schemas/OrderDTO"
+
+      /Order/{orderid}:
+        description: Perform operations based on the id
+        parameters:
+          name: orderid
+          required: true
+          in: path
+            schema:
+              type: integer
+        get:
+          summary: Get order wit id
+          responses:
+            200:
+              description:
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderDTO'
+            400:
+              description: A bad request by user
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorMessage'
+            406:
+              description: Incorrect parameter type
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorMessage'
+        put:
+          summary: Update the order info
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/OrderDTO'
+          responses:
+            200:
+              description: Updates the crate
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/OrderDTO'
+            400:
+              description: Crate not available
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorMessage'
+
+        delete:
+          summary: Delete the order based on id
+          responses:
+            406:
+              description: If the id is not of the type Integer
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ErrorMessage'
+            404:
+              description: If the id is available
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/ErrorMessage"
+            200:
+              description: Deletes the bottle
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/OrderDTO"
