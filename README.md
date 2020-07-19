@@ -37,7 +37,7 @@ Also include a swagger UI resource to enable displaying swagger UI as in our dem
 
 ## IN-PROGRESS TASKS
 
-- User: Place Orders? (POST) (0/2)
+- User: Place Orders
 - Open API Specification implementation
 - Order DTO implementation
 - User: Change Order as long as it is not PROCESSED? (PUT)
