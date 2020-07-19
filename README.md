@@ -17,34 +17,34 @@ Also include a swagger UI resource to enable displaying swagger UI as in our dem
 ## Completed Tasks
 
 ### Use Cases
-User: View Beverages? (GET)
-User: Filtering MIN, MAX?
-User: View Order via Order ID? (GET)
-Employee: Create beverages
-Employee: Update beverages
-Employee: Delete beverages
+- User: View Beverages? (GET)
+- User: Filtering MIN, MAX?
+- User: View Order via Order ID? (GET)
+- Employee: Create beverages
+- Employee: Update beverages
+- Employee: Delete beverages
 
 ### REST API
 
-Correct HTTP verbs
-Correct status codes
-Beverage DTO
-Pagination
-Appropriate API path desig
-Parameter Validation
-Error Message for beverages
+- Correct HTTP verbs
+- Correct status codes
+- Beverage DTO
+- Pagination
+- Appropriate API path desig
+- Parameter Validation
+- Error Message for beverages
 
 
 ## Inprogress Tasks
-User: Place Orders? (POST) (0/2)
-Open API Specification implementation
-Order DTO implementation
-User: Change Order as long as it is not PROCESSED? (PUT)
-Employee: Commits order and changes state to PROCESSED? (PUT) (0/1.5)
-Concurrency Handling
-Polymorphism
-Error Message for orders
-Idempotency for POST
+- User: Place Orders? (POST) (0/2)
+- Open API Specification implementation
+- Order DTO implementation
+- User: Change Order as long as it is not PROCESSED? (PUT)
+- Employee: Commits order and changes state to PROCESSED? (PUT) (0/1.5)
+- Concurrency Handling
+- Polymorphism
+- Error Message for orders
+- Idempotency for POST
 
 
 
