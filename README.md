@@ -14,7 +14,7 @@ Also include a swagger UI resource to enable displaying swagger UI as in our dem
 - openapi.yaml
 - insomnia.json
 
-## Completed Tasks
+## COMPLETED TASKS
 
 ### Use Cases
 - User: View Beverages? (GET)
@@ -35,7 +35,8 @@ Also include a swagger UI resource to enable displaying swagger UI as in our dem
 - Error Message for beverages
 
 
-## Inprogress Tasks
+## IN-PROGRESS TASKS
+
 - User: Place Orders? (POST) (0/2)
 - Open API Specification implementation
 - Order DTO implementation
